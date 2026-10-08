@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sentinel Demo — security dashboard
 
-## Getting Started
+A small demo of a security operations dashboard: the kind of screens an analyst opens to see, in a few seconds, what is on fire and where.
 
-First, run the development server:
+> **Demo project.** All data is mock data served by the app's own REST API. Nothing here is connected to real infrastructure.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Live demo:** _coming soon (Vercel)_
+
+## Screens
+
+- **Overview** — critical/open alert counts, distribution of open alerts by severity, the alerts that need action and the riskiest assets.
+- **Alerts** — newest first, color-coded by severity, filterable by severity and status, with a debounced search. The status (open → investigating → resolved) can be changed inline with an optimistic update that rolls back if the API call fails.
+- **Assets** — inventory table sorted by risk score (0–100) with a colored risk meter, open alerts per asset, filters by asset type and search by name, owner or IP.
+
+The same four colors (critical / high / medium / low) mean the same thing everywhere, both for alert severity and for asset risk, so the screen can be read at a glance.
+
+## Stack
+
+- **Next.js 16** (App Router, Route Handlers) + **React 19** + **TypeScript**
+- **Tailwind CSS v4** with a custom dark theme defined as design tokens in `globals.css`
+- ESLint + Prettier (with the Tailwind class-sorting plugin)
+
+## REST API
+
+| Method  | Endpoint                                | Description                                          |
+| ------- | --------------------------------------- | ---------------------------------------------------- |
+| `GET`   | `/api/summary`                          | Aggregated numbers for the overview                  |
+| `GET`   | `/api/alerts?severity=&status=&q=`      | Alerts, newest first; `400` on invalid filter values |
+| `PATCH` | `/api/alerts/:id` `{ "status": "..." }` | Change an alert's status; `404` / `400` on bad input |
+| `GET`   | `/api/assets?type=&q=`                  | Assets, riskiest first, with their open alert count  |
+
+The UI consumes it through a small typed client (`src/lib/api.ts`) and a `useFetch` hook that aborts outdated requests, so a slow response never overwrites a newer one.
+
+State lives in memory: status changes reset when the server restarts, and on serverless hosting different instances may not share them. That is intentional for a demo — a real version would use a database.
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── api/           # REST endpoints (Route Handlers)
+│   ├── alerts/        # /alerts page
+│   ├── assets/        # /assets page
+│   └── page.tsx       # / overview
+├── components/        # Screen components and shared UI (badges, risk meter, filters)
+└── lib/               # Types, mock data, API client, hooks, helpers
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+bun install
+bun run dev        # http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Other scripts: `bun run build`, `bun run lint`, `bun run typecheck`, `bun run format`.

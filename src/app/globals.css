@@ -1,26 +1,25 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Dark-first palette: SOC analysts usually work with dark dashboards. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-canvas: #0b0f17;
+  --color-panel: #111827;
+  --color-panel-hover: #172033;
+  --color-line: #1f2a3d;
+  --color-text: #e5e7eb;
+  --color-muted: #8b95a7;
+
+  --color-critical: #f43f5e;
+  --color-high: #f97316;
+  --color-medium: #eab308;
+  --color-low: #38bdf8;
+  --color-ok: #22c55e;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-text);
 }
