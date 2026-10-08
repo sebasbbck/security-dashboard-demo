@@ -6,7 +6,7 @@ import { timeAgo } from "@/lib/format";
 import { useDebounced } from "@/lib/use-debounced";
 import { useFetch } from "@/lib/use-fetch";
 import { ALERT_STATUSES, SEVERITIES, type AlertStatus, type Severity } from "@/lib/types";
-import { SeverityBadge, StatusLabel } from "./badges";
+import { SeverityBadge, statusTextColor } from "./badges";
 import FilterPill from "./FilterPill";
 
 const severityAccent: Record<Severity, string> = {
@@ -117,21 +117,18 @@ export default function AlertsView() {
               </p>
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
-              <StatusLabel status={alert.status} />
-              <select
-                value={alert.status}
-                onChange={(e) => changeStatus(alert.id, e.target.value as AlertStatus)}
-                aria-label={`Change status of ${alert.title}`}
-                className="border-line bg-canvas rounded-md border px-2 py-1 text-sm"
-              >
-                {ALERT_STATUSES.map((s) => (
-                  <option key={s} value={s}>
-                    {s === "open" ? "Reopen" : s === "investigating" ? "Investigate" : "Resolve"}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <select
+              value={alert.status}
+              onChange={(e) => changeStatus(alert.id, e.target.value as AlertStatus)}
+              aria-label={`Status of ${alert.title}`}
+              className={`border-line bg-canvas rounded-md border px-2 py-1 text-sm font-medium capitalize ${statusTextColor[alert.status]}`}
+            >
+              {ALERT_STATUSES.map((s) => (
+                <option key={s} value={s} className="text-text">
+                  {s}
+                </option>
+              ))}
+            </select>
           </li>
         ))}
       </ul>

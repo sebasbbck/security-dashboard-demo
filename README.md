@@ -4,7 +4,7 @@ A small demo of a security operations dashboard: the kind of screens an analyst 
 
 > **Demo project.** All data is mock data served by the app's own REST API. Nothing here is connected to real infrastructure.
 
-**Live demo:** _coming soon (Vercel)_
+**Live demo:** https://security-dashboard-demo-zeta.vercel.app
 
 ## Screens
 

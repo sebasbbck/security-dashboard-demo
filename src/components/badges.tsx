@@ -18,12 +18,8 @@ export function SeverityBadge({ severity }: { severity: Severity }) {
   );
 }
 
-const statusStyles: Record<AlertStatus, string> = {
+export const statusTextColor: Record<AlertStatus, string> = {
   open: "text-text",
   investigating: "text-medium",
   resolved: "text-ok",
 };
-
-export function StatusLabel({ status }: { status: AlertStatus }) {
-  return <span className={`text-sm capitalize ${statusStyles[status]}`}>{status}</span>;
-}
